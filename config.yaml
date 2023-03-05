@@ -1,0 +1,8 @@
+data_source: local
+dataset_path: .\dataset\testdata2.csv
+db:
+  IPaddress: localhost
+  dbname: riyou
+  passwd: hackno
+  port: 3306
+  username: root
