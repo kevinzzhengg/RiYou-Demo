@@ -2,9 +2,10 @@
 import streamlit as st
 
 # ML Pkgs
-from sklearn.model_selection import train_test_split
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import cross_val_score
-from sklearn.tree import DecisionTreeClassifier
+from sklearn.model_selection import train_test_split
 
 # EDA Pkgs
 import pandas as pd
@@ -14,8 +15,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-def decisiontree_clf_predict(dataset):
-    st.write("this is the test demo of DecisionTree")
+def knn_predict(dataset):
+    st.write("this is the test demo of KNN")
 
     ## Check Data
     data = pd.read_csv(dataset)
@@ -29,35 +30,32 @@ def decisiontree_clf_predict(dataset):
             continue
         else:
             return st.warning("the dataset is unqualified.")
-    
+        
     ## Split the Features and Target
     x = data.iloc[:,data.columns != "Recidivism_Within_3years"]
     y = data.iloc[:,data.columns == "Recidivism_Within_3years"]
-    with st.container():
-        x_col, y_col = st.columns(2)
-        with x_col:
-            st.subheader("Features:")
-            st.dataframe(x,use_container_width=True)
-        with y_col:
-            st.subheader("Target")
-            st.dataframe(y,use_container_width=True)
 
-    ## Split the Train Samples and the Test Samples
     Xtrain, Xtest, Ytrain, Ytest = train_test_split(x,y,test_size=0.3)
     for i in [Xtrain,Xtest,Ytrain,Ytest]:
         i.index = range(i.shape[0])
+    Ytrain = pd.DataFrame(Ytrain).values.ravel()
+    Ytest = pd.DataFrame(Ytest).values.ravel()
     
     ## Run the DecisionTree Model
-    clf = DecisionTreeClassifier(random_state=25,max_depth=3)
-    clf = clf.fit(Xtrain,Ytrain)
-    score = clf.score(Xtest,Ytest)
+    knn = KNeighborsClassifier()
+    params = {"n_neighbors":[i for i in range(1,30)],"weights":["distance","uniform"],"p":[1,2]}
+    gcv = GridSearchCV(knn,params,scoring = "accuracy",cv = 6)
+    gcv.fit(Xtrain,Ytrain)
+    y_ = gcv.predict(Xtest)
+    score = gcv.score(Xtest,Ytest)
+    ct = pd.crosstab(index = Ytest,columns = y_,rownames=["True"],colnames=["Predict"])
     with st.container():
-        st.caption("accuracy rating of DT: {}".format(score))
+        st.caption("accuracy rating of KNN: {}".format(score))
+        st.write(ct)
     with st.sidebar:
-        st.write("accuracy rating of DT: {}".format(score))
+        st.write("accuracy rating of KNN: {}".format(score))
     
-    return clf
-       
+    return gcv
 
-def decisiontree_clf_parameter_add():
+def knn_parameter_add():
     st.write("more parameter is waiting to be added.")

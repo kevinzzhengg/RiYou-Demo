@@ -1,5 +1,5 @@
 data_source: local
-dataset_path: .\dataset\testdata2.csv
+dataset_path: .\dataset\NIJ_s_Recidivism_Datasets.csv
 db:
   IPaddress: localhost
   dbname: riyou

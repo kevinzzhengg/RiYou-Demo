@@ -2,6 +2,7 @@ import yaml
 import streamlit as st
 import pymysql
 import pandas as pd
+import os
 
 # 对于yaml配置文件的读写操作
 def yaml_read():
@@ -25,6 +26,19 @@ def yaml_change(key:list,value):
     else:
         return "key value error"
     yaml_write(config_list=config_list)
+
+# 文件路径读取
+def file_selector(folder_path='.'):
+    filenames = os.listdir(folder_path)
+    selected_filename = st.selectbox("Select A file",filenames,label_visibility='collapsed')
+    return os.path.join(folder_path,selected_filename)
+
+# 预处理后的文件保存
+def download_local(dataframe:pd.DataFrame):
+    return dataframe.to_csv().encode('utf-8')
+
+def download_plantform(dataframe:pd.DataFrame,filename):
+    dataframe.to_csv('./dataset/{}'.format(filename),index=False)
 
 ## 对于数据库的相关操作
 # 数据库连接

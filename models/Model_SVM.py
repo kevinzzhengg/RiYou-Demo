@@ -2,9 +2,10 @@
 import streamlit as st
 
 # ML Pkgs
-from sklearn.model_selection import train_test_split
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import cross_val_score
-from sklearn.tree import DecisionTreeClassifier
+from sklearn.model_selection import train_test_split
 
 # EDA Pkgs
 import pandas as pd
@@ -14,8 +15,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-def decisiontree_clf_predict(dataset):
-    st.write("this is the test demo of DecisionTree")
+def svm_predict(dataset):
+    st.write("this is the test demo")
 
     ## Check Data
     data = pd.read_csv(dataset)
@@ -29,35 +30,16 @@ def decisiontree_clf_predict(dataset):
             continue
         else:
             return st.warning("the dataset is unqualified.")
-    
+        
     ## Split the Features and Target
     x = data.iloc[:,data.columns != "Recidivism_Within_3years"]
     y = data.iloc[:,data.columns == "Recidivism_Within_3years"]
-    with st.container():
-        x_col, y_col = st.columns(2)
-        with x_col:
-            st.subheader("Features:")
-            st.dataframe(x,use_container_width=True)
-        with y_col:
-            st.subheader("Target")
-            st.dataframe(y,use_container_width=True)
 
-    ## Split the Train Samples and the Test Samples
     Xtrain, Xtest, Ytrain, Ytest = train_test_split(x,y,test_size=0.3)
     for i in [Xtrain,Xtest,Ytrain,Ytest]:
         i.index = range(i.shape[0])
     
-    ## Run the DecisionTree Model
-    clf = DecisionTreeClassifier(random_state=25,max_depth=3)
-    clf = clf.fit(Xtrain,Ytrain)
-    score = clf.score(Xtest,Ytest)
-    with st.container():
-        st.caption("accuracy rating of DT: {}".format(score))
-    with st.sidebar:
-        st.write("accuracy rating of DT: {}".format(score))
     
-    return clf
-       
 
-def decisiontree_clf_parameter_add():
+def svm_parameter_add():
     st.write("more parameter is waiting to be added.")
