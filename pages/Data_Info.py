@@ -41,7 +41,6 @@ with st.sidebar:
 ### Main Part
 st.info("You Selected {}".format(filename))
 config_list = yaml_read()
-type(config_list)
 config_list['dataset_path'] = filename
 yaml_write(config_list=config_list)
 
