@@ -31,14 +31,18 @@ if ds_selected == "local":
 
 # 数据库表单
 elif ds_selected == "database":
-    in_left, in_right = st.columns(2)
-    with in_left:
-        db_IP = st.text_input("数据库IP地址",key="ip")
-    with in_right:
-        db_port = st.text_input("端口号",key="port")
-    db_username = st.text_input("用户名")
-    db_passwd = st.text_input("密码",type="password")
-    db_name = st.text_input("数据库名称")
-    button_conn = st.button("连接",use_container_width=True)
+    with st.expander('log info'):
+        in_left, in_middle,in_right = st.columns([1,3,1])
+        with in_middle:
+            with st.container():
+                col1,col2 = st.columns(2)
+                with col1:
+                    db_IP = st.text_input("数据库IP地址",key="ip")
+                with col2:
+                    db_port = st.text_input("端口号",key="port")
+                db_username = st.text_input("用户名")
+                db_passwd = st.text_input("密码",type="password")
+                db_name = st.text_input("数据库名称")
+                button_conn = st.button("连接",use_container_width=True)
 
 
