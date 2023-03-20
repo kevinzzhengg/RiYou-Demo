@@ -36,7 +36,7 @@ with st.sidebar:
 
     # 选择后更改配置文件
     st.caption('选择数据集(平台)')
-    filename = file_selector(".\dataset")
+    filename = file_selector("./dataset")
     config_list = yaml_read()
     config_list['dataset_path'] = filename
     yaml_write(config_list=config_list)
