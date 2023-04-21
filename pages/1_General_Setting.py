@@ -12,10 +12,13 @@ ds_selected = st.selectbox("",['local','database'],label_visibility="collapsed")
 
 # 选择本地文件
 if ds_selected == "local":
-    st.write("choose local csv file")
-    file_selected = file_selector('.\dataset')
+    uploaded_file = st.file_uploader("请选择一个CSV文件", type='csv', key="csvfile")
+    data = pd.DataFrame()
     try:
-        data = pd.read_csv(file_selected,index_col=False)
+        if uploaded_file is not None:
+                data = pd.read_csv(uploaded_file)
+                data.to_csv('./dataset/{}'.format(uploaded_file.name),index=False)
+                st.success('upload success!')
         if 'Unnamed: 0' in data.columns:
             data.drop(['Unnamed: 0'],inplace=True,axis=1)
         with st.expander("data overview"):
