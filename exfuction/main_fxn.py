@@ -3,6 +3,7 @@ import streamlit as st
 import pymysql
 import pandas as pd
 import os
+import re
 
 # 对于yaml配置文件的读写操作
 def yaml_read():
@@ -39,6 +40,21 @@ def download_local(dataframe:pd.DataFrame):
 
 def download_plantform(dataframe:pd.DataFrame,filename):
     dataframe.to_csv('./dataset/{}'.format(filename),index=False)
+
+# 检查是否有已保存的模型
+def check_save_models_dir(dataset_path):
+    dataset_name = re.search(r"[/|\\](.*?)[/|\\](.*)\.csv",dataset_path).groups()[1]
+    if os.path.exists('./userdata/{}'.format(dataset_name)):
+        return True
+    else:
+        return False
+    
+def check_save_models_file(dataset_path,model_name:str):
+    dataset_name = re.search(r"[/|\\](.*?)[/|\\](.*)\.csv",dataset_path).groups()[1]
+    if os.path.exists('./userdata/{0}/{1}.pkl'.format(dataset_name,model_name)):
+        return True
+    else:
+        return False
 
 ## 对于数据库的相关操作
 # 数据库连接
