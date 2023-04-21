@@ -3,44 +3,73 @@ import streamlit as st
 import pandas as pd
 from exfuction.main_fxn import yaml_read,yaml_write,yaml_change
 from exfuction.main_fxn import db_connection
+import os
+import re
 
 def main():
     st.set_page_config(page_title="HomePage"
                     , page_icon="bar_chart"
-                    #, layout="wide"
+                    , layout="wide"
                     , initial_sidebar_state="expanded"
                 )
     
     st.title("Community Corrector Recidivism Predicted System")
     st.caption("use different AI models to predict the possibility of the community corrector to recidivism.")
     
+    # 展示平台资源清单
     with st.container():
-        selected_ds = st.selectbox("数据来源",["local","database"])
-        if selected_ds == "local":
-            st.write("  ")
-            yaml_change(['data_source'],'local')
-        elif selected_ds == "database":
-            yaml_change(['data_source'],'database')
-            out_left, out_right = st.columns(2)
-            with out_left:
-                in_left, in_right = st.columns(2)
-                with in_left:
-                    db_IP = st.text_input("数据库IP地址",key="ip")
-                with in_right:
-                    db_port = st.text_input("端口号",key="port")
-                db_username = st.text_input("用户名")
-                db_passwd = st.text_input("密码",type="password")
-                db_name = st.text_input("数据库名称")
-                button_conn = st.button("连接",use_container_width=True)
-                
-            with out_right:
-                if button_conn:
-                    yaml_change(['db','IPaddress'],db_IP)
-                    yaml_change(['db','port'],int(db_port))
-                    yaml_change(['db','username'],db_username)
-                    yaml_change(['db','passwd'],db_passwd)
-                    yaml_change(['db','dbname'],db_name)
-                    db_connection()
+        df = pd.DataFrame(columns=['DATASET','DT','RF','KNN','SVM','NB','Logist','XGBC','LGBM','CBDT'])
+        for each in os.listdir('./dataset/'):
+            dataset_name = re.search(r"(.*?)\.csv",each).groups()[0]
+            if os.path.exists('./userdata/{0}/{1}.pkl'.format(dataset_name,'dt')):
+                dt_model_file = '✅'
+            else:
+                dt_model_file = ''
+            
+            if os.path.exists('./userdata/{0}/{1}.pkl'.format(dataset_name,'rf')):
+                rf_model_file = '✅'
+            else:
+                rf_model_file = ''
+
+            if os.path.exists('./userdata/{0}/{1}.pkl'.format(dataset_name,'knn')):
+                knn_model_file = '✅'
+            else:
+                knn_model_file = ''
+
+            if os.path.exists('./userdata/{0}/{1}.pkl'.format(dataset_name,'svm')):
+                svm_model_file = '✅'
+            else:
+                svm_model_file = ''
+
+            if os.path.exists('./userdata/{0}/{1}.pkl'.format(dataset_name,'nb')):
+                nb_model_file = '✅'
+            else:
+                nb_model_file = ''
+
+            if os.path.exists('./userdata/{0}/{1}.pkl'.format(dataset_name,'lc')):
+                lc_model_file = '✅'
+            else:
+                lc_model_file = ''
+
+            if os.path.exists('./userdata/{0}/{1}.pkl'.format(dataset_name,'xgbc')):
+                xgbc_model_file = '✅'
+            else:
+                xgbc_model_file = ''
+
+            if os.path.exists('./userdata/{0}/{1}.pkl'.format(dataset_name,'lgbm')):
+                lgbm_model_file = '✅'
+            else:
+                lgbm_model_file = ''
+
+            if os.path.exists('./userdata/{0}/{1}.pkl'.format(dataset_name,'cbdt')):
+                cbdt_model_file = '✅'
+            else:
+                cbdt_model_file = ''
+            
+            df_temp = pd.DataFrame({'DATASET':each,'DT':dt_model_file,'RF':rf_model_file,'KNN':knn_model_file,'SVM':svm_model_file,'NB':nb_model_file,'Logist':lc_model_file,'XGBC':xgbc_model_file,'LGBM':lgbm_model_file,'CBDT':cbdt_model_file},index=[''])
+            df = pd.concat([df,df_temp],axis=0)
+        st.subheader('平台资源清单:')
+        st.dataframe(df.iloc[:,0:10],use_container_width=True)
 
 if __name__ == '__main__':
     main()
