@@ -101,7 +101,7 @@ def svm_parameter_add():
                 col_left,col_right = st.columns(2)
                 with col_left:
                     # probability参数
-                    probability = st.selectbox('probability',[False,True])
+                    probability = st.selectbox('probability',[True,False])
                 with col_right:
                     # shrinking参数
                     shrinking = st.selectbox('shrinking',[True,False])

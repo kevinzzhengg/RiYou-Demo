@@ -73,6 +73,16 @@ def randomforest_predict(dataset,parameter_dict={}):
             os.mkdir('./userdata/{}'.format(dataset_name))
         joblib.dump(rfc,'./userdata/{}/rf.pkl'.format(dataset_name))
         st.success('trainning completed!')
+
+        n_features = x.shape[1]
+        plt.figure(figsize=(3,8))
+        plt.barh(range(n_features), rfc.feature_importances_, align='center')
+        plt.yticks(np.arange(n_features), x.columns.tolist())
+        plt.xlabel("Feature importance")
+        plt.ylabel("Feature")
+        st.pyplot(plt)
+        plt.close()
+
         return rfc
         # score = rfc.score(Xtest,Ytest)
         # with st.container():
